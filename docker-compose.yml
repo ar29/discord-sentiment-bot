@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: sentiment_bot
+      POSTGRES_USER: aniruddha
+      POSTGRES_PASSWORD: aniruddha123
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - djangonetwork
+
+  web:
+    build: .
+    # command: bash -c "python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./:/app 
+    environment:
+      - PYTHONUNBUFFERED=1
+      - POSTGRES_DB=sentiment_bot
+      - POSTGRES_USER=aniruddha
+      - POSTGRES_PASSWORD=aniruddha123
+    depends_on:
+      - db
+    networks:
+      - djangonetwork
+
+volumes:
+  pgdata:
+
+networks:
+  djangonetwork:
+    driver: bridge
+
